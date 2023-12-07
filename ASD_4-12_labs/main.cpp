@@ -9,98 +9,91 @@ void swap(int& a, int& b)
     a = b;
     b = temp;
 }
-class Sorting
-{
+class Sorting {
 private:
 public:
     ///№4 Пузырёк
-    void bubbleSort(int arr[], int n)
-    {
+    void bubbleSort(int arr[], int n) {
         for (int i = 0; i < n - 1; i++) //Наружний цикл от 0 до n-1
         {
             for (int j = 0; j < n - i - 1; j++) //Внутренний цикл от 0 до n-i-1
             {
                 if (arr[j] < arr[j + 1]) //Если элемент меньше последующего
                 {
-                    swap(arr[j], arr[j+1]); //Меняем их местами
+                    swap(arr[j], arr[j + 1]); //Меняем их местами
                 }
             }
         }
     }
+
     ///№5 Вставками
     //Проверяем между собой второй элемент с первым и, если надо, меняем местами.
     // Сравниваем следующую пару элементов и проверяем все пары до нее.
-    void insertionSort(int arr[], int n)
-    {
-        for (int i = 1; i < n; i++)
-        {
+    void insertionSort(int arr[], int n) {
+        for (int i = 1; i < n; i++) {
             int key = arr[i];
             int j = i - 1;
-            while (j >= 0 && arr[j] < key)
-            {
+            while (j >= 0 && arr[j] < key) {
                 arr[j + 1] = arr[j];
                 j--;
             }
             arr[j + 1] = key;
         }
     }
+
     ///№6 Посредством выбора
     //Ищем наименьшее значение в массиве и ставим его на позицию,
     //откуда начали проход. Потом двигаемся на следующую позицию.
-    void selectionSort(int arr[], int n)
-    {
-        for (int i = 0; i < n - 1; i++)
-        {
+    void selectionSort(int arr[], int n) {
+        for (int i = 0; i < n - 1; i++) {
             int minIndex = i;
-            for (int j = i + 1; j < n; j++)
-            {
-                if (arr[j] > arr[minIndex])
-                {
+            for (int j = i + 1; j < n; j++) {
+                if (arr[j] > arr[minIndex]) {
                     minIndex = j;
                 }
             }
             swap(arr[i], arr[minIndex]);
         }
     }
+
     ///№7 Шелла
     //Исходный массив размером N разбивается на подмассивы с шагом N/2. Подмассивы сортируются вставками.
     //Затем вновь разбиваются, но уже с шагом равным N/4. Цикл повторяется.
     //Производим целочисленное деление шага на два каждую итерацию.
     //Когда шаг становится равен 1, массив просто сортируется вставками.
-    void shellSort(int arr[], int n)
-    {
-        for (int step = n/2; step > 0; step /= 2) // Выбираем шаг
+    void shellSort(int arr[], int n) {
+        for (int step = n / 2; step > 0; step /= 2) // Выбираем шаг
         {
             for (int i = step; i < n; i++) // Применяем сортировку вставками для каждого сегмента
             {
                 int temp = arr[i];
                 int j;
                 for (j = i; j >= step && arr[j - step] > temp; j -= step) // Сравнивем, меняем
-                 {
-                     arr[j] = arr[j - step];
-                 }
+                {
+                    arr[j] = arr[j - step];
+                }
                 arr[j] = temp;
             }
         }
     }
+
     ///№8 Корневая
     //Его вычислительная сложность O(k * n), где k количество проходов по массиву. Если n достаточно велико,
     // а k наоборот очень мало, то данный алгоритм выигрывает у O(n * Log n).
     //Максимальное число из массива
-    int getMax(int arr[], int n)
-    {
+    int getMax(int arr[], int n) {
         int mx = arr[0];
         for (int i = 1; i < n; i++)
             if (arr[i] > mx)
                 mx = arr[i];
         return mx;
     }
+
     //Считает появление той или иной цифры в каждом разряде и сортирует вспомогательный массив
-    void countSort(int arr[], int n, int exp)
-    {
+    void countSort(int arr[], int n, int exp) {
         //Объявляем вспомогательный массив
         int output[n];
-        int i, count[10] = { 0 };
+        int i, count[10] = {0};
         for (i = 0; i < n; i++)
             count[(arr[i] / exp) % 10]++;
         for (i = 1; i < 10; i++)
@@ -114,9 +107,9 @@ public:
         for (i = 0; i < n; i++)
             arr[i] = output[i];
     }
+
     //Сама сортировка
-    void radixSort(int arr[], int n)
-    {
+    void radixSort(int arr[], int n) {
         int m = getMax(arr, n);
         for (int exp = 1; m / exp > 0; exp *= 10)
             countSort(arr, n, exp);
@@ -132,40 +125,34 @@ public:
     // Когда все элементы извлечены, массив будет отсортирован по возрастанию.
 
     // Функция для создания кучи (heap) заданного размера
-    void heapCreation (int arr[], int n, int i)
-    {
+    void heapCreation(int arr[], int n, int i) {
         int largest = i; //Наибольший элемент кучи - корень дерева
         int left = 2 * i + 1; //Левый потомок
         int right = 2 * i + 2; //Правый потомок
         //Если левый потомок больше корня, он становится корнем
-        if (left < n && arr[left] > arr[largest])
-        {
+        if (left < n && arr[left] > arr[largest]) {
             largest = left;
         }
         // Если правый потомок больше, чем самый большой элемент на данный момент, он становится им
-        if (right < n && arr[right] > arr[largest])
-        {
+        if (right < n && arr[right] > arr[largest]) {
             largest = right;
         }
         // Если наибольший элемент не корень, делаем, чтоб это было так
-        if (largest != i)
-        {
+        if (largest != i) {
             swap(arr[i], arr[largest]);
             // Рекурсивно строим кучу для поддерева
             (arr, n, largest);
         }
     }
+
     //Сама функция пирамидальной сортировки (сортировки с использованием хипа
-    void heapSort(int arr[], int n)
-    {
-    //Построение кучи (по-сути, уже перегруппировка массива)
-    for (int i = n / 2 - 1; i >= 0; i--)
-    {
-        heapCreation(arr, n, i);
-    }
+    void heapSort(int arr[], int n) {
+        //Построение кучи (по-сути, уже перегруппировка массива)
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            heapCreation(arr, n, i);
+        }
         // Извлекаем элементы по одному из кучи
-        for (int i = n - 1; i >= 0; i--)
-        {
+        for (int i = n - 1; i >= 0; i--) {
             // Перемещаем текущий корень в конец
             swap(arr[0], arr[i]);
             // Вызываем ту же процедуру на уменьшенной куче
@@ -174,6 +161,65 @@ public:
     }
     ///№10 Слиянием
     //Cортировка слиянием делит большой массив на два меньших подмассива, а затем рекурсивно сортирует подмассивы.
+    //Суть работы алгоритма заключается в том, что он разбивает список на две половины,
+    //сортирует каждую половину отдельно, а затем объединяет их вместе в отсортированный список.
+    // Этот процесс повторяется для каждой половины до тех пор, пока не будет достигнута базовая единица - список из одного элемента.
+    //Сложность сортировки слиянием составляет O(n log n), где n - количество элементов в списке. Это делает ее одной из самых эффективных сортировок.
+
+    // Функция для слияния двух отсортированных массивов
+    void merge(int arr[], int l, int m, int r)
+    {
+        int i, j, k;
+        int n1 = m - l + 1;
+        int n2 = r - m;
+        // Создаем временные массивы
+        int L[n1], R[n2];
+        // Копируем данные во временные массивы
+        for (i = 0; i < n1; i++)
+            L[i] = arr[l + i];
+        for (j = 0; j < n2; j++)
+            R[j] = arr[m + 1 + j];
+        // Слияние временных массивов обратно в arr[l..r]
+        i = 0; // Индекс первого подмассива
+        j = 0; // Индекс второго подмассива
+        k = l; // Индекс объединенного подмассива
+        while (i < n1, j < n2) {
+            if (L[i] <= R[j]) {
+                arr[k] = L[i];
+                i++;
+            } else {
+                arr[k] = R[j];
+                j++;
+            }
+            k++;
+        }
+        // Копирование оставшихся элементов L[], если они есть
+        while (i < n1) {
+            arr[k] = L[i];
+            i++;
+            k++;
+        }
+        // Копирование оставшихся элементов R[], если они есть
+        while (j < n2) {
+            arr[k] = R[j];
+            j++;
+            k++;
+        }
+    }
+// Основная функция, которая сортирует arr[l..r] с использованием merge()
+    void mergeSort(int arr[], int l, int r)
+    {
+        if (l < r)
+        {
+            // Найдем среднюю точку
+            int m = l + (r - l) / 2;
+            // Сортируем первую и вторую половины
+            mergeSort(arr, l, m);
+            mergeSort(arr, m + 1, r);
+            // Объединяем отсортированные половины
+            merge(arr, l, m, r);
+        }
+    }
 
     ///№11 Быстрая
     //Массив разделяется на подмассивы, которые сортируются и затем сливаются в один.
@@ -276,9 +322,10 @@ int main()
     //test.insertionSort(mass, size);
     //test.selectionSort(mass, size);
     //test.shellSort(mass, size);
-    test.radixSort();
+    ///test.radixSort();
     //test.heapSort(mass, size);
-    test.quickSort(mass, 0, size-1, size);
+    ///test.mergeSort(mass, size);
+    //test.quickSort(mass, 0, size-1, size);
     std::cout << "Here is your delicious sorted array:" << std::endl;
     for (int i = 0; i < size; i++)
     {
