@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <list>
+#include <algorithm>
 
 const int TABLE_SIZE = 20;
 
@@ -21,7 +22,7 @@ public:
         std::ofstream outputFile(filename);
         if (!outputFile.is_open())
         {
-            std::cerr << "Hmmm... Strange. I can't open the file. Maybe something is wrong?" << std::endl;
+            std::cerr << "Невозможно открыть выходной файл." << std::endl;
             return;
         }
         for (int i = 0; i < TABLE_SIZE; ++i)
@@ -33,6 +34,7 @@ public:
         }
         outputFile.close();
     }
+
 private:
     int hashFunction(const std::string& word)
     {
@@ -44,6 +46,7 @@ private:
         }
         return sum % TABLE_SIZE;
     }
+
     std::vector<std::list<std::string>> table;
 };
 int main()
@@ -52,19 +55,19 @@ int main()
     std::string outputFileName = "output.txt";
     HashTable hashTable;
     std::ifstream inputFile(inputFileName);
-    if (!inputFile.is_open())
-    {
-        std::cerr << "Hmmm... Strange. I can't open the file. Maybe something is wrong?" << std::endl;
+    if (!inputFile.is_open()) {
+        std::cerr << "Невозможно открыть входной файл." << std::endl;
         return 1;
     }
     std::string word;
     while (inputFile >> word)
     {
+        word.erase(std::remove_if(word.begin(), word.end(), ::ispunct), word.end()); //удаляет знаки препинания из слова
         hashTable.insert(word);
     }
     inputFile.close();
     // Запись в файл
     hashTable.writeToFile(outputFileName);
-    std::cout << "Hey, cutie! I have written your hash table to the " << outputFileName << " file. Isn't that what you wanted?" << std::endl;
+    std::cout << "Хэш-таблица была записана в файл " << outputFileName << std::endl;
     return 0;
 }

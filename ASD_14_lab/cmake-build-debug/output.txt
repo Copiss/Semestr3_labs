@@ -1,0 +1,6 @@
+0: NZWA
+10: flowers
+11: napp
+14: dog
+14: float
+16: son
