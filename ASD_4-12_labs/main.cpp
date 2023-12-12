@@ -78,19 +78,20 @@ public:
     }
 
     ///№8 Корневая
-    //Его вычислительная сложность O(k * n), где k количество проходов по массиву. Если n достаточно велико,
-    // а k наоборот очень мало, то данный алгоритм выигрывает у O(n * Log n).
+    // Её вычислительная сложность O(k * n), где k количество проходов по массиву.
+    // Если n достаточно велико, а k наоборот очень мало, то данный алгоритм выигрывает у O(n * Log n).
     //Максимальное число из массива
-    int getMax(int arr[], int n) {
+    int getMax(int arr[], int n)
+    {
         int mx = arr[0];
         for (int i = 1; i < n; i++)
             if (arr[i] > mx)
                 mx = arr[i];
         return mx;
     }
-
     //Считает появление той или иной цифры в каждом разряде и сортирует вспомогательный массив
-    void countSort(int arr[], int n, int exp) {
+    void countSort(int arr[], int n, int exp)
+    {
         //Объявляем вспомогательный массив
         int output[n];
         int i, count[10] = {0};
@@ -107,9 +108,9 @@ public:
         for (i = 0; i < n; i++)
             arr[i] = output[i];
     }
-
     //Сама сортировка
-    void radixSort(int arr[], int n) {
+    void radixSort(int arr[], int n)
+    {
         int m = getMax(arr, n);
         for (int exp = 1; m / exp > 0; exp *= 10)
             countSort(arr, n, exp);
@@ -183,11 +184,15 @@ public:
         i = 0; // Индекс первого подмассива
         j = 0; // Индекс второго подмассива
         k = l; // Индекс объединенного подмассива
-        while (i < n1, j < n2) {
-            if (L[i] <= R[j]) {
+        while (i < n1, j < n2)
+        {
+            if (L[i] <= R[j])
+            {
                 arr[k] = L[i];
                 i++;
-            } else {
+            }
+            else
+            {
                 arr[k] = R[j];
                 j++;
             }
@@ -200,7 +205,8 @@ public:
             k++;
         }
         // Копирование оставшихся элементов R[], если они есть
-        while (j < n2) {
+        while (j < n2)
+        {
             arr[k] = R[j];
             j++;
             k++;
@@ -261,49 +267,47 @@ public:
     }
 }
     ///№12 Внешняя многофазная
-    /*// Программа реализует внешнюю многофазную сортировку
-// Функция для разделения входного массива на подмассивы и их сортировки
-void externalMultiwayMergeSort(std::vector<int>& arr, int chunkSize) {
-    int n = arr.size();
-    int numChunks = (n + chunkSize - 1) / chunkSize; // Вычисляем количество подмассивов
-    for (int i = 0; i < numChunks; i++) {
-        int start = i * chunkSize;
-        int end = std::min((i + 1) * chunkSize, n);
-        std::sort(arr.begin() + start, arr.begin() + end); // Сортируем каждый подмассив
-    }
+    //Внешняя многофазная сортировка разбивает данные на несколько частей и сортирует их в памяти компьютера,
+    // а затем объединяет эти части в отсортированный массив.
+    //Сложность сортировки - O(n log n), где n - размер исходного массива
 
-    std::vector<int> result(n);
-    std::vector<int> index(numChunks, 0); // Создаем вспомогательный массив для отслеживания текущего элемента в каждом подмассиве
-
-    for (int i = 0; i < n; i++) {
-        int minIndex = -1;
-        for (int j = 0; j < numChunks; j++) {
-            if (index[j] < (j + 1) * chunkSize && (minIndex == -1 || arr[index[j]] < arr[index[minIndex]])) {
-                minIndex = j; // Находим индекс минимального элемента среди текущих элементов каждого подмассива
-            }
+//Функция для разделения входного массива на подмассивы и их сортировки
+    void externalSort(int* arr, int size, int chunkSize)
+    {
+        int numChunks = (size + chunkSize - 1) / chunkSize; //вычисление количества частей, на которые будет разделен исходный массив
+        int* result = new int[size];                        //временный массив для отсортированных элементов
+        int* index = new int[numChunks];                    //временныймассив индексов для хранения текущей позиции в каждой части
+        //Сортировка каждой части
+        for (int i = 0; i < size; i += chunkSize)
+        {
+            std::sort(arr + i, arr + std::min(i + chunkSize, size));
         }
-        result[i] = arr[index[minIndex]]; // Записываем минимальный элемент в результирующий массив
-        index[minIndex]++; // Увеличиваем индекс текущего элемента в подмассиве, из которого был выбран минимальный элемент
+        // Установка начальных позиций для каждой части в массиве индексов
+        for (int i = 0; i < numChunks; i++)
+        {
+            index[i] = i * chunkSize;
+        }
+
+        for (int i = 0; i < size; i++)
+        {
+            int minIndex = -1;
+            for (int j = 0; j < numChunks; j++)
+            {//Если текущий элемент в части не превышает границы этой части и его значение меньше значения минимального элемента
+                if (index[j] < (j + 1) * chunkSize && (minIndex == -1 || arr[index[j]] < arr[index[minIndex]]))
+                {//Обновляем индекс части с минимальным текущим элементом
+                    minIndex = j;
+                }
+            }
+            result[i] = arr[index[minIndex]];
+            index[minIndex]++;
+        }
+        //Копируем отсортированные элементы из временного массива в исходный
+        for (int i = 0; i < size; i++)
+        {
+            arr[i] = result[i];
+        }
     }
-
-    arr = result; // Заменяем исходный массив отсортированным
-}
-
-int main() {
-    std::vector<int> arr = {5, 2, 7, 3, 9, 8, 1, 4, 6}; // Исходный массив
-    int chunkSize = 3; // Размер подмассива
-
-    externalMultiwayMergeSort(arr, chunkSize); // Вызываем функцию для внешней многофазной сортировки
-
-    std::cout << "Sorted array: ";
-    for (int num : arr) {
-        std::cout << num << " "; // Выводим отсортированный массив
-    }
-
-    return 0;
-}*/
 };
-
 
 int main()
 {
@@ -322,10 +326,11 @@ int main()
     //test.insertionSort(mass, size);
     //test.selectionSort(mass, size);
     //test.shellSort(mass, size);
-    ///test.radixSort();
+    //test.radixSort(mass, size);
     //test.heapSort(mass, size);
-    ///test.mergeSort(mass, size);
+    ///test.mergeSort(mass, size); (№10 Слиянием)
     //test.quickSort(mass, 0, size-1, size);
+    ///test.externalSort(mass,size,5); (№12 Внешняя многофазная)
     std::cout << "Here is your delicious sorted array:" << std::endl;
     for (int i = 0; i < size; i++)
     {
